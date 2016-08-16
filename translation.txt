@@ -1,0 +1,60 @@
+Memory Writes:
+0XXXXXXX YYYYYYYY - 32bit write to [XXXXXXX + offset] | mov32 X Y
+1XXXXXXX 0000YYYY - 16bit write to [XXXXXXX + offset] | mov16 X Y
+2XXXXXXX 000000YY - 8bit write to [XXXXXXX + offset] | mov8 X Y
+
+Conditional 32bit codes:
+3XXXXXXX YYYYYYYY - Greater Than (YYYYYYYY > [XXXXXXX + offset]) | if32g X Y
+4XXXXXXX YYYYYYYY - Less Than (YYYYYYYY < [XXXXXXX + offset]) | if32l X Y
+5XXXXXXX YYYYYYYY - Equal To (YYYYYYYY == [XXXXXXX + offset]) | if32e X Y
+6XXXXXXX YYYYYYYY - Not Equal To (YYYYYYYY != [XXXXXXX + offset]) | if32ne X Y
+
+Conditional 16bit deref + write codes:
+7XXXXXXX ZZZZYYYY - Greater Than | if16g X Y
+8XXXXXXX ZZZZYYYY - Less Than | if16l X Y
+9XXXXXXX ZZZZYYYY - Equal To | if16e X Y
+AXXXXXXX ZZZZYYYY - Not Equal To | if16ne X Y
+
+Offset Codes:
+BXXXXXXX 00000000 - offset = *(xxx) | off ref X
+D3000000 XXXXXXXX - set offset to immediate value | off set X
+DC000000 XXXXXXXX - Adds an value to the current offset | off add X
+
+Loop Code:
+C0000000 YYYYYYYY - Sets the repeat value to ‘YYYYYYYY’ | loop set Y
+D1000000 00000000 - Loop execute | loop start | loop exec
+D0000000 00000000 - Terminator code | term
+
+Data Register Codes:
+D4000000 XXXXXXXX - Adds XXXXXXXX to the data register | data add X
+D5000000 XXXXXXXX - Sets the data register to XXXXXXXX | data set X
+D6000000 XXXXXXXX - (32bit) [XXXXXXXX+offset] = data ; offset += 4 | data set32 X
+D7000000 XXXXXXXX - (16bit) [XXXXXXXX+offset] = data & 0xffff ; offset += 2 | data set16 X
+D8000000 XXXXXXXX - (8bit) [XXXXXXXX+offset] = data & 0xff ; offset++ | data set8 X
+D9000000 XXXXXXXX - (32bit) sets data to [XXXXXXXX+offset] | data get32 X
+DA000000 XXXXXXXX - (16bit) sets data to [XXXXXXXX+offset] & 0xffff | data get16 X
+DB000000 XXXXXXXX - (8bit) sets data to [XXXXXXXX+offset] & 0xff | data get8 X
+
+Special Codes:
+DD000000 XXXXXXXX - if KEYPAD has value XXXXXXXX execute next block | key <sequence of a|b|select|start|right|left|up|down|r|l|x|y comma seperated>
+
+Exxxxxxx support (patch code)
+
+
+
+SPECIAL KEYPAD CODE
+===================
+As for the Special KEYPAD cheat code, the keypad value can be any combination of the following:
+
+0x1      A
+0x2      B
+0x4     Select
+0x8     Start
+0x10    Right
+0x20    Left
+0x40    Up
+0x80    Down
+0x100    R
+0x200    L
+0x400    X
+0x800    Y
