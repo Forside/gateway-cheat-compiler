@@ -38,7 +38,7 @@ DB000000 XXXXXXXX - (8bit) sets data to [XXXXXXXX+offset] & 0xff | data get8 X
 Special Codes:
 DD000000 XXXXXXXX - if KEYPAD has value XXXXXXXX execute next block | key <sequence of a|b|select|start|right|left|up|down|r|l|x|y comma seperated>
 
-Exxxxxxx support (patch code)
+Exxxxxxx support (patch code) | sup X
 
 
 

@@ -18,22 +18,23 @@ along with Gateway Cheat Compiler.  If not, see <http://www.gnu.org/licenses/>.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Gateway_Cheat_Compiler
 {
-	static class Program
+	class LeftGrowingLabel : Label
 	{
-		/// <summary>
-		/// Der Haupteinstiegspunkt für die Anwendung.
-		/// </summary>
-		[STAThread]
-		static void Main()
+		protected override void OnTextChanged(EventArgs e)
 		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Main());
+			if (this.RightToLeft == RightToLeft.Yes)
+			{
+				int oldWidth = this.Width;
+				base.OnTextChanged(e);
+				this.Left = this.Left - (this.Width - oldWidth);
+			} else
+				base.OnTextChanged(e);
 		}
 	}
 }

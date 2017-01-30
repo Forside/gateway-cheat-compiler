@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+This file is part of Gateway Cheat Compiler (Copyright 2016-2017 Jonas Hülsermann).
+
+Gateway Cheat Compiler is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Gateway Cheat Compiler is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Gateway Cheat Compiler.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,15 +62,18 @@ namespace Gateway_Cheat_Compiler
 						case 'D': return dcmp_key(param);
 						default: return "";
 					}
+				case 'E': return dcmp_sup(command.Substring(1));
 				default: return "";
 			}
 		}
+
 		public String decompile(String line)
 		{
 			String command = "", param = "";
-			
+
 			line = line.Replace("\t", "").Trim();
-			if (line.Length == 0 || line[0] == '#') return "";
+			if (line[0] == '#') return line;
+			if (line.Length != 17 || line[8] != ' ') return "";
 
 			String[] parts = line.Split(' ');
 			command = parts[0];
@@ -63,10 +83,11 @@ namespace Gateway_Cheat_Compiler
 			return decompile(command, param);
 		}
 		
+
 		private String dcmp_mov(byte bits, String address, String value)
 		{
 			address = "0x" + removezeroes(address);
-			value = "0x" + removezeroes(value);
+			value = getCorrectValueFormat(value);
 			
 			switch (bits)
 			{
@@ -80,7 +101,7 @@ namespace Gateway_Cheat_Compiler
 		private String dcmp_if(byte bits, char mode, String address, String value)
 		{
 			address = "0x" + removezeroes(address);
-			value = "0x" + removezeroes(value);
+			value = getCorrectValueFormat(value);
 			
 			if (bits == 32)
 			{
@@ -110,7 +131,7 @@ namespace Gateway_Cheat_Compiler
 
 		private String dcmp_off(String mode, String value)
 		{
-			value = "0x" + removezeroes(value);
+			value = getCorrectValueFormat(value);
 
 			switch (mode)
 			{
@@ -123,7 +144,7 @@ namespace Gateway_Cheat_Compiler
 
 		private String dcmp_loop(String mode, String value = "")
 		{
-			value = "0x" + removezeroes(value);
+			value = getCorrectValueFormat(value);
 
 			switch (mode)
 			{
@@ -136,7 +157,7 @@ namespace Gateway_Cheat_Compiler
 
 		private String dcmp_data(String mode, String value)
 		{
-			value = "0x" + removezeroes(value);
+			value = getCorrectValueFormat(value);
 
 			String[] options = { "add", "set", "set32", "set16", "set8", "get32", "get16", "get8" };
 			
@@ -193,6 +214,14 @@ namespace Gateway_Cheat_Compiler
 				: "key " + result.Remove(0, 1);
 		}
 
+		private String dcmp_sup(String value)
+		{
+			value = getCorrectValueFormat(value);
+
+			return "sup " + value;
+		}
+
+
 		private String removezeroes(String text)
 		{
 			if (text.Length == 0)
@@ -218,6 +247,17 @@ namespace Gateway_Cheat_Compiler
 				return value.ToUpper();
 			else
 				return UInt32.Parse(value).ToString("X");
+		}
+
+		private String getCorrectValueFormat(String value)
+		{
+			if (value == null || value.Length == 0)
+				return "";
+			
+			if (Properties.Settings.Default.decompileNumbersToDecimal)
+				return UInt32.Parse(value, System.Globalization.NumberStyles.HexNumber).ToString();
+			else
+				return "0x" + removezeroes(value);
 		}
 	}
 }
